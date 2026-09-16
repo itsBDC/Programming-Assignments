@@ -1,99 +1,127 @@
 #include <iostream>
+#include <vector>
+#include <string>
 
 using namespace std;
 
-bool isValid(long long number);
-int sumOfDoubleEvenPlace(long long number);
+vector<int> readCardNumber();
+int getPrefix(vector<int> number, int k);
+bool prefixMatched(vector<int> number);
+int getSize(vector<int> number);
+int sumOfOddPlace(vector<int> number);
 int getDigit(int number);
-int sumOfOddPlace(long long number);
-bool prefixMatched(long long number, int d);
-int getSize(long long d);
-long long getPrefix(long long number, int k);
+int sumOfDoubleEvenPlace(vector<int> number);
+bool isValid(vector<int> number);
 
-int main() {
-    long long creditCardNumber;
+int main()
+{
+    vector<int> number = readCardNumber();
     
-    cout << "Enter a credit card number as a long integer: ";
-    cin >> creditCardNumber;
-    
-    if (isValid(creditCardNumber)) {
-        cout << creditCardNumber << " is valid" << endl;
+    if (isValid(number)) {
+        cout << "\nResult: The credit card number is VALID.\n";
     } else {
-        cout << creditCardNumber << " is invalid" << endl;
+        cout << "\nResult: The credit card number is INVALID.\n";
     }
+
+    cout << "--------------------------------\n";
+    cout << "Size: " << getSize(number) << "\n";
+    cout << "Prefix Matched: " << (prefixMatched(number) ? "Yes" : "No") << "\n";
+    cout << "Sum of Odd Places: " << sumOfOddPlace(number) << "\n";
+    cout << "Sum of Double Even Places: " << sumOfDoubleEvenPlace(number) << "\n";
     
     return 0;
 }
 
-bool isValid(long long number) {
-    int size = getSize(number);
-    if (size < 13 || size > 16) {
-        return false;
+vector<int> readCardNumber()
+{
+    string number;
+    cout << "Enter a credit card number: ";
+    cin >> number;
+
+    vector<int> card_digits;
+    for (int i = 0; i < number.size(); ++i) {
+        card_digits.push_back(number[i] - '0');
     }
-    
-    if (!prefixMatched(number, 4) && 
-        !prefixMatched(number, 5) && 
-        !prefixMatched(number, 37) && 
-        !prefixMatched(number, 6)) {
-        return false;
-    }
-    
-    int totalSum = sumOfDoubleEvenPlace(number) + sumOfOddPlace(number);
-    return (totalSum % 10 == 0);
+    return card_digits;
 }
 
-int sumOfDoubleEvenPlace(long long number) {
+bool isValid(vector<int> number)
+{
+    if (((sumOfDoubleEvenPlace(number) + sumOfOddPlace(number)) % 10 == 0) && 
+        prefixMatched(number) && 
+        13 <= getSize(number) && getSize(number) <= 16)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+int sumOfDoubleEvenPlace(vector<int> number)
+{
     int sum = 0;
-    number /= 10;
-    
-    while (number > 0) {
-        int digit = number % 10;
-        sum += getDigit(digit * 2);
-        number /= 100; 
+    for (int i = number.size() - 2; i >= 0; i -= 2)
+    {
+        int digit = number[i] * 2;
+        sum += getDigit(digit);
     }
     return sum;
 }
 
-int getDigit(int number) {
-    if (number < 10) {
-        return number;
-    }
-    return (number / 10) + (number % 10);
-}
-
-int sumOfOddPlace(long long number) {
+int sumOfOddPlace(vector<int> number)
+{
     int sum = 0;
-    
-    while (number > 0) {
-        sum += number % 10;
-        number /= 100;
+    for (int i = number.size() - 1; i >= 0; i -= 2)
+    {
+        sum += number[i];
     }
     return sum;
 }
 
-bool prefixMatched(long long number, int d) {
-    return getPrefix(number, getSize(d)) == d;
-}
-
-int getSize(long long d) {
-    int count = 0;
-    while (d > 0) {
-        d /= 10;
-        count++;
-    }
-    return count;
-}
-
-long long getPrefix(long long number, int k) {
-    int size = getSize(number);
-    if (size < k) {
+int getDigit(int number)
+{
+    if (number < 10)
+    {
         return number;
     }
-    
-    int diff = size - k;
-    while (diff > 0) {
-        number /= 10;
-        diff--;
+    else
+    {
+        return number / 10 + number % 10;
     }
-    return number;
+}
+
+int getSize(vector<int> number)
+{
+    return number.size();
+}
+
+bool prefixMatched(vector<int> number)
+{
+    if ((getPrefix(number, 1)) == 4 || 
+        (getPrefix(number, 1)) == 5 || 
+        (getPrefix(number, 2)) == 37 || 
+        (getPrefix(number, 1)) == 6)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+int getPrefix(vector<int> number, int k)
+{
+    if (k > number.size()) {
+        k = number.size();
+    }
+    
+    int k_prefix = 0;
+    for (int i = 0; i < k; i++)
+    {
+        k_prefix = k_prefix * 10 + number[i];
+    }
+    return k_prefix;
 }
