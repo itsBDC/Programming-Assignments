@@ -19,13 +19,10 @@ int main()
     cin >> x2 >> y2;
     cout << "Enter the third point for a triangle (x3, y3): ";
     cin >> x3 >> y3;
-    // Calculate the lengths of the sides of the triangle
     double side1 = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
     double side2 = sqrt(pow(x3 - x2, 2) + pow(y3 - y2, 2));
     double side3 = sqrt(pow(x1 - x3, 2) + pow(y1 - y3, 2));
-    // Calculate the semi-perimeter
     double s = (side1 + side2 + side3) / 2;
-    // Calculate the area using Heron's formula
     double area = sqrt(s * (s - side1) * (s - side2) * (s - side3));
     cout << "The area of the triangle is " << area << endl;
     return 0;

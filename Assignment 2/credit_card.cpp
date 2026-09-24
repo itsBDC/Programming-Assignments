@@ -17,9 +17,11 @@ int main()
 {
     vector<int> number = readCardNumber();
     
-    if (isValid(number)) {
+    if (isValid(number)) 
+    {
         cout << "\nResult: The credit card number is VALID.\n";
-    } else {
+    } else 
+    {
         cout << "\nResult: The credit card number is INVALID.\n";
     }
 
