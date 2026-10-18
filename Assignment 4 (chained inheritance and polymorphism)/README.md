@@ -136,15 +136,6 @@ Status    : WARNING - OVERHEATING!
   [Device]            destructor ran for TS-01
 ```
 
-## Hand-drawn illustrations to include (Part 1)
-
-Draw these on paper, photograph or scan them, and attach them to your submission.
-
-1. **Class chain diagram.** Three stacked boxes (`Device`, `Sensor`, `TemperatureSensor`) with arrows pointing **upward** from child to parent (the UML convention). Inside each box, list that class's *own* data members and functions.
-2. **Object-in-memory diagram.** One tall box labelled `serverRoom (TemperatureSensor object)`, split into three layers: a `Device` part (`deviceId`, `location`, `powered`), a `Sensor` part (`unit`, `lastReading`) and a `TemperatureSensor` part (`maxSafeTemp`). This shows that the object physically contains the parent parts.
-3. **Constructor/destructor order.** Two arrows side by side: one pointing down for construction (`Device` → `Sensor` → `TemperatureSensor`) and one pointing up for destruction.
-4. **Who can call what.** A small table or colour-coded sketch showing which functions each class's object can use (for example, `Sensor` objects cannot call `isOverheating()`).
-
 ---
 
 # Part 2: Polymorphism
@@ -242,14 +233,8 @@ Checkout -> [Cash] Carol hands over UGX 60000.
 [MobileMoneyPayment::describe] Mobile Money wallet 0772 000 111
 ```
 
-## Hand-drawn illustrations to include (Part 2)
 
-1. **Class diagram.** `Payment` at the top with its two virtual functions, and three child boxes below, each showing its overridden `pay()`. Arrows point up to the parent.
-2. **Pointer-to-object diagram.** One pointer box labelled `Payment* ptr` with three different arrows (drawn in different colours) pointing to `momo`, `card` and `cash`. Next to each arrow, write the output that `ptr->pay()` produces.
-3. **"One call, many results" sketch.** A single call `ptr->pay(50000)` in the centre, splitting into three branches that lead to the three different behaviours.
-4. **Virtual table (vtable) sketch (optional but impressive).** Three small tables, one per class, showing the `pay()` entry pointing to that class's own version of `pay()`. At run time the object's hidden pointer picks the right table.
 
----
 
 ## Key terms
 
