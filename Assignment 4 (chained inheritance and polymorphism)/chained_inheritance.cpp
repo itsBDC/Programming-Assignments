@@ -1,28 +1,12 @@
-/*
- * Take-home Assignment, Part 1: Chained (Multilevel) Inheritance
- *
- * Real-world example: an electronic monitoring system
- *
- *      Device  ->  Sensor  ->  TemperatureSensor
- *     (Level 1)   (Level 2)       (Level 3)
- *
- * Every TemperatureSensor IS A Sensor, and every Sensor IS A Device.
- * Each level adds something new and keeps everything from the levels above.
- *
- * Compile: g++ -std=c++11 -Wall -Wextra chained_inheritance.cpp -o chained
- * Run:     ./chained     (on Windows: chained.exe)
- */
+
 
 #include <iostream>
 #include <string>
 
 using namespace std;
 
-// ---------------------------------------------------------------
-// LEVEL 1 - Base class: anything that can be switched on and off
-// ---------------------------------------------------------------
 class Device {
-protected:                      // protected: visible to derived classes, hidden from main()
+protected:                     
     string deviceId;
     string location;
     bool   powered;
@@ -56,12 +40,10 @@ public:
     }
 };
 
-// ---------------------------------------------------------------
-// LEVEL 2 - Sensor IS A Device that can take measurements
-// ---------------------------------------------------------------
+
 class Sensor : public Device {
 protected:
-    string unit;                // e.g. "degC", "%"
+    string unit;               
     double lastReading;
 
 public:
@@ -75,7 +57,7 @@ public:
     }
 
     void recordReading(double value) {
-        // 'powered' and 'deviceId' were inherited from Device
+        
         if (!powered) {
             cout << deviceId << ": cannot record, sensor is OFF" << endl;
             return;
@@ -87,15 +69,13 @@ public:
     double getLastReading() const { return lastReading; }
 
     void showSensorInfo() const {
-        showDeviceInfo();       // inherited from Device
+        showDeviceInfo();       
         cout << "Unit      : " << unit << endl;
         cout << "Last read : " << lastReading << " " << unit << endl;
     }
 };
 
-// ---------------------------------------------------------------
-// LEVEL 3 - TemperatureSensor IS A Sensor (and therefore a Device)
-// ---------------------------------------------------------------
+
 class TemperatureSensor : public Sensor {
 private:
     double maxSafeTemp;
@@ -110,30 +90,29 @@ public:
         cout << "  [TemperatureSensor] destructor ran for " << deviceId << endl;
     }
 
-    // Members defined only at this level
+
     bool isOverheating() const { return lastReading > maxSafeTemp; }
 
     double toFahrenheit() const { return lastReading * 9.0 / 5.0 + 32.0; }
 
     void showStatus() const {
-        showSensorInfo();       // inherited from Sensor (which itself calls Device's function)
+        showSensorInfo();       
         cout << "Max safe  : " << maxSafeTemp << " " << unit << endl;
         cout << "In degF   : " << toFahrenheit() << endl;
         cout << "Status    : " << (isOverheating() ? "WARNING - OVERHEATING!" : "Normal") << endl;
     }
 };
 
-// ---------------------------------------------------------------
 int main() {
     cout << "=== 1. Creating a TemperatureSensor (watch the constructor order) ===" << endl;
     TemperatureSensor serverRoom("TS-01", "Server Room", 35.0);
 
     cout << "\n=== 2. Using members inherited from Device (Level 1) ===" << endl;
-    serverRoom.recordReading(28.5);     // sensor is still OFF, so this is refused
-    serverRoom.powerOn();               // defined in Device
+    serverRoom.recordReading(28.5);     
+    serverRoom.powerOn();               
 
     cout << "\n=== 3. Using members inherited from Sensor (Level 2) ===" << endl;
-    serverRoom.recordReading(28.5);     // defined in Sensor
+    serverRoom.recordReading(28.5);
 
     cout << "\n=== 4. Using members defined in TemperatureSensor (Level 3) ===" << endl;
     serverRoom.showStatus();
@@ -144,16 +123,13 @@ int main() {
 
     cout << "\n=== 5. Power off, then try to record again ===" << endl;
     serverRoom.powerOff();
-    serverRoom.recordReading(40.0);     // refused: the rule lives in Sensor, the state in Device
+    serverRoom.recordReading(40.0);
 
     cout << "\n=== 6. A Level 2 object on its own ===" << endl;
     Sensor humidity("HS-01", "Greenhouse", "%");
     humidity.powerOn();
     humidity.recordReading(64.0);
     humidity.showSensorInfo();
-    // humidity.isOverheating();   // ERROR: Sensor does not have what its child class adds
-
-    // serverRoom.powered = true;  // ERROR: 'powered' is protected, main() cannot touch it
 
     cout << "\n=== 7. End of main: objects are destroyed in reverse order ===" << endl;
     return 0;
